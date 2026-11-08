@@ -1,0 +1,596 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XNCE EER - Admin Dashboard</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f3f5f9;
+      color: #202534;
+    }
+
+    .header {
+      background: #171b2d;
+      color: white;
+      padding: 17px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .brand {
+      font-size: 19px;
+      font-weight: bold;
+    }
+
+    .brand span {
+      color: #a78bfa;
+    }
+
+    .logout {
+      width: auto;
+      margin: 0;
+      background: #ef4444;
+      padding: 10px 15px;
+      font-size: 13px;
+    }
+
+    .layout {
+      display: flex;
+      min-height: calc(100vh - 60px);
+    }
+
+    .sidebar {
+      width: 220px;
+      background: #20263b;
+      padding: 20px 12px;
+      flex-shrink: 0;
+    }
+
+    .sidebar button {
+      background: transparent;
+      color: #cbd5e1;
+      text-align: left;
+      margin: 4px 0;
+      font-size: 14px;
+      font-weight: normal;
+      padding: 13px;
+    }
+
+    .sidebar button.active,
+    .sidebar button:hover {
+      background: #6d4aff;
+      color: white;
+    }
+
+    .main {
+      flex: 1;
+      min-width: 0;
+      padding: 22px;
+    }
+
+    .page-title {
+      font-size: 23px;
+      margin-bottom: 20px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .stat {
+      background: white;
+      padding: 18px;
+      border-radius: 13px;
+      box-shadow: 0 3px 12px #00000008;
+    }
+
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 12px;
+      background: #eee9ff;
+      color: #7047ed;
+    }
+
+    .stat h3 {
+      font-size: 23px;
+      margin-bottom: 5px;
+    }
+
+    .stat p {
+      color: #7a8190;
+      font-size: 13px;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .panel {
+      background: white;
+      border-radius: 13px;
+      padding: 18px;
+      margin-bottom: 18px;
+      box-shadow: 0 3px 12px #00000008;
+    }
+
+    .panel h3 {
+      margin-bottom: 15px;
+      font-size: 17px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #dce0e8;
+      border-radius: 8px;
+      outline: none;
+      margin: 7px 0;
+      font-size: 14px;
+    }
+
+    input:focus {
+      border-color: #7047ed;
+    }
+
+    button {
+      border: none;
+      border-radius: 8px;
+      padding: 12px 15px;
+      background: #7047ed;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      margin: 5px 3px 5px 0;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .btn-green {
+      background: #16a34a;
+    }
+
+    .btn-red {
+      background: #dc2626;
+    }
+
+    .btn-orange {
+      background: #ea580c;
+    }
+
+    .btn-dark {
+      background: #334155;
+    }
+
+    .message {
+      font-size: 13px;
+      margin-top: 10px;
+      overflow-wrap: anywhere;
+    }
+
+    .user-card {
+      border: 1px solid #e7e9ef;
+      border-radius: 10px;
+      padding: 14px;
+      margin: 10px 0;
+    }
+
+    .user-card strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .user-card p {
+      color: #737b8b;
+      font-size: 13px;
+      margin: 5px 0;
+      overflow-wrap: anywhere;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .active-badge {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .banned-badge {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .transaction {
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .transaction small {
+      display: block;
+      color: #7b8190;
+      margin-top: 5px;
+    }
+
+    .credit {
+      color: #16a34a;
+      font-weight: bold;
+    }
+
+    .debit {
+      color: #dc2626;
+      font-weight: bold;
+    }
+
+    .log-item {
+      border-left: 3px solid #7047ed;
+      padding: 10px 12px;
+      margin: 10px 0;
+      background: #f8f7ff;
+      border-radius: 5px;
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    .log-item small {
+      display: block;
+      color: #7b8190;
+      margin-top: 6px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    #adminLoading {
+      text-align: center;
+      padding: 60px 15px;
+    }
+
+    .empty {
+      color: #89909d;
+      text-align: center;
+      padding: 20px;
+      font-size: 13px;
+    }
+
+    @media(max-width: 850px) {
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media(max-width: 600px) {
+      .layout {
+        display: block;
+      }
+
+      .sidebar {
+        width: 100%;
+        display: flex;
+        overflow-x: auto;
+        padding: 8px;
+      }
+
+      .sidebar button {
+        white-space: nowrap;
+        width: auto;
+        margin: 2px;
+        padding: 11px;
+      }
+
+      .main {
+        padding: 13px;
+      }
+
+      .page-title {
+        font-size: 20px;
+      }
+
+      .stat {
+        padding: 13px;
+      }
+
+      .stat h3 {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+    <div class="brand">
+      <i class="fa-solid fa-wallet"></i>
+      XNCE <span>EER ADMIN</span>
+    </div>
+
+    <button class="logout" id="adminLogout">
+      <i class="fa-solid fa-right-from-bracket"></i> Logout
+    </button>
+  </header>
+
+  <div id="adminLoading">
+    <i class="fa-solid fa-spinner fa-spin"></i>
+    <p>Admin Dashboard Loading...</p>
+  </div>
+
+  <div class="layout hidden" id="adminDashboard">
+
+    <aside class="sidebar">
+
+      <button class="active" data-page="dashboard">
+        <i class="fa-solid fa-chart-pie"></i> Dashboard
+      </button>
+
+      <button data-page="users">
+        <i class="fa-solid fa-users"></i> Users
+      </button>
+
+      <button data-page="transactions">
+        <i class="fa-solid fa-money-bill-transfer"></i> Transactions
+      </button>
+
+      <button data-page="logs">
+        <i class="fa-solid fa-clock-rotate-left"></i> Activity Logs
+      </button>
+
+    </aside>
+
+    <main class="main">
+
+      <!-- DASHBOARD -->
+
+      <section class="section active" id="dashboard">
+
+        <h2 class="page-title">Dashboard Overview</h2>
+
+        <div class="stats">
+
+          <div class="stat">
+            <div class="stat-icon">
+              <i class="fa-solid fa-users"></i>
+            </div>
+            <h3 id="totalUsers">0</h3>
+            <p>Total Users</p>
+          </div>
+
+          <div class="stat">
+            <div class="stat-icon">
+              <i class="fa-solid fa-user-check"></i>
+            </div>
+            <h3 id="activeUsers">0</h3>
+            <p>Active Users</p>
+          </div>
+
+          <div class="stat">
+            <div class="stat-icon">
+              <i class="fa-solid fa-user-slash"></i>
+            </div>
+            <h3 id="bannedUsers">0</h3>
+            <p>Banned Users</p>
+          </div>
+
+          <div class="stat">
+            <div class="stat-icon">
+              <i class="fa-solid fa-wallet"></i>
+            </div>
+            <h3 id="totalBalance">৳0</h3>
+            <p>Total Wallet Balance</p>
+          </div>
+
+        </div>
+
+        <div class="panel">
+          <h3>Quick User Search</h3>
+
+          <input
+            id="searchUserId"
+            type="text"
+            inputmode="numeric"
+            maxlength="7"
+            placeholder="Enter 7 digit User ID"
+          >
+
+          <button id="searchBtn">
+            <i class="fa-solid fa-magnifying-glass"></i> Search User
+          </button>
+
+          <div id="userResult"></div>
+        </div>
+
+        <div class="panel">
+          <h3>Recent Admin Activity</h3>
+          <div id="adminTransactions">
+            <div class="empty">Loading...</div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- USERS -->
+
+      <section class="section" id="users">
+
+        <h2 class="page-title">User Management</h2>
+
+        <div class="panel">
+
+          <h3>Search User</h3>
+
+          <input
+            id="searchUserId2"
+            type="text"
+            inputmode="numeric"
+            maxlength="7"
+            placeholder="Enter User ID"
+          >
+
+          <button id="searchBtn2">
+            <i class="fa-solid fa-search"></i> Search
+          </button>
+
+          <div id="userResult2"></div>
+
+        </div>
+
+        <div class="panel">
+
+          <h3>All Registered Users</h3>
+
+          <button id="refreshUsers" class="btn-dark">
+            <i class="fa-solid fa-rotate"></i> Refresh Users
+          </button>
+
+          <div id="userList">
+            <div class="empty">Loading users...</div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- TRANSACTIONS -->
+
+      <section class="section" id="transactions">
+
+        <h2 class="page-title">User Transactions</h2>
+
+        <div class="panel">
+
+          <h3>Selected User</h3>
+
+          <div id="selectedUser">
+            <div class="empty">Search a user first</div>
+          </div>
+
+          <hr style="border:0;border-top:1px solid #eee;margin:15px 0;">
+
+          <h3>Balance Management</h3>
+
+          <input
+            id="actionAmount"
+            type="number"
+            min="1"
+            step="1"
+            placeholder="Enter amount (Taka)"
+          >
+
+          <input
+            id="actionReason"
+            type="text"
+            maxlength="200"
+            placeholder="Reason for transaction"
+          >
+
+          <button id="addBalance" class="btn-green">
+            <i class="fa-solid fa-plus"></i> Add Balance
+          </button>
+
+          <button id="deductBalance" class="btn-orange">
+            <i class="fa-solid fa-minus"></i> Deduct Balance
+          </button>
+
+          <h3 style="margin-top:20px;">Account Controls</h3>
+
+          <button id="banUser" class="btn-red">
+            <i class="fa-solid fa-ban"></i> Ban User
+          </button>
+
+          <button id="unbanUser" class="btn-green">
+            <i class="fa-solid fa-unlock"></i> Unban User
+          </button>
+
+          <button id="deleteUser" class="btn-dark">
+            <i class="fa-solid fa-trash"></i> Delete User
+          </button>
+
+          <div id="actionMessage" class="message"></div>
+
+        </div>
+
+        <div class="panel">
+
+          <h3>Transaction History</h3>
+
+          <div id="transactionList">
+            <div class="empty">No user selected</div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ACTIVITY LOGS -->
+
+      <section class="section" id="logs">
+
+        <h2 class="page-title">Admin Activity Logs</h2>
+
+        <div class="panel">
+
+          <h3>Admin Actions History</h3>
+
+          <button id="refreshLogs" class="btn-dark">
+            <i class="fa-solid fa-rotate"></i> Refresh Logs
+          </button>
+
+          <div id="activityLogs">
+            <div class="empty">Loading activity logs...</div>
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+
+  <script src="firebase-config.js"></script>
+  <script src="admin.js"></script>
+
+</body>
+</html>

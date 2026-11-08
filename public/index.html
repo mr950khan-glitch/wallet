@@ -1,1 +1,130 @@
 
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XNCEER Wallet</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- LOGIN / SIGNUP -->
+  <div class="container" id="authView">
+
+    <div class="card">
+      <h2>XNCEER Wallet</h2>
+      <p>আপনার ডিজিটাল ওয়ালেটে স্বাগতম</p>
+
+      <div id="loginBox">
+        <h3>Login</h3>
+
+        <form id="loginForm">
+          <input type="email" id="loginEmail"
+            placeholder="Email Address" required>
+
+          <input type="password" id="loginPassword"
+            placeholder="Password" required>
+
+          <button type="submit">Login</button>
+        </form>
+
+        <p class="link" id="showSignup">
+          নতুন অ্যাকাউন্ট খুলুন
+        </p>
+      </div>
+
+      <div id="signupBox" class="hidden">
+        <h3>Create Account</h3>
+
+        <form id="signupForm">
+          <input type="text" id="signupName"
+            placeholder="আপনার নাম" required>
+
+          <input type="email" id="signupEmail"
+            placeholder="Email Address" required>
+
+          <input type="password" id="signupPassword"
+            placeholder="Password (কমপক্ষে ৬ অক্ষর)"
+            minlength="6" required>
+
+          <button type="submit">Signup</button>
+        </form>
+
+        <p class="link" id="showLogin">
+          আগে অ্যাকাউন্ট আছে? Login করুন
+        </p>
+      </div>
+
+      <p id="authMessage"></p>
+    </div>
+
+  </div>
+
+
+  <!-- WALLET HOME -->
+  <div id="appView" class="hidden">
+
+    <header class="header">
+
+      <div class="profile">
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+          alt="Profile">
+
+        <div>
+          <strong id="userName">User</strong>
+          <p>ID: <span id="userId">Loading...</span></p>
+        </div>
+      </div>
+
+      <button id="logoutBtn" style="width:auto;margin:0">
+        Logout
+      </button>
+
+    </header>
+
+
+    <main class="container">
+
+      <!-- BALANCE -->
+      <div class="card balance">
+        <p>আপনার বর্তমান ব্যালেন্স</p>
+        <h2 id="balance">৳ 0.00</h2>
+        <button id="refreshBtn">Refresh Balance</button>
+      </div>
+
+
+      <!-- ACCOUNT INFORMATION -->
+      <div class="card">
+        <h2>Account Information</h2>
+
+        <p>নাম: <strong id="profileName">-</strong></p>
+        <p>User ID: <strong id="profileId">-</strong></p>
+        <p>Email: <strong id="profileEmail">-</strong></p>
+      </div>
+
+
+      <!-- TRANSACTIONS -->
+      <div class="card">
+        <h2>Transaction History</h2>
+
+        <div id="transactionList">
+          <p>কোনো Transaction পাওয়া যায়নি।</p>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+
+  <!-- FIREBASE -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+
+  <script src="firebase-config.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>
